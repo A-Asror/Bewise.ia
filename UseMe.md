@@ -34,12 +34,12 @@ When the `Docker` is started, these are the URL addresses:
 3. Docker setup:
    ```shell
     # Every time you write a new code, update your container with:
-    docker-compose up -d --build
+    docker-compose -f docker-compose.dev.yml up -d --build
    ```
 
 4. (IMPORTANT) Database setup:
    ```shell
     # (Docker) Generate revision for the database auto-migrations
-    docker exec backend_app alembic revision --autogenerate -m "YOUR MIGRATION TITLE"
-    docker exec backend_app alembic upgrade head    # to register the database classes
+    docker exec -ti fast-api alembic revision --autogenerate -m "YOUR MIGRATION TITLE"
+    docker exec -ti fast-api alembic upgrade head    # to register the database classes
    ```
