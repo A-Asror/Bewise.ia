@@ -100,6 +100,3 @@ class BackendBaseSettings(pydantic.BaseSettings):
             "openapi_prefix": self.OPENAPI_PREFIX,
             "api_prefix": self.API_PREFIX,
         }
-
-
-print(BackendBaseSettings())

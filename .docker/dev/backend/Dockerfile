@@ -15,8 +15,6 @@ ENV APP_HOME=/home/backend
 ENV VIRTUAL_ENV=/home/backend/venv
 RUN mkdir $HOME
 RUN mkdir $APP_HOME
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Set the working directory
 WORKDIR $APP_HOME
