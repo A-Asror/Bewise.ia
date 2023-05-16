@@ -1,0 +1,94 @@
+version: '3.9'
+
+networks:
+  bewiseia-network:
+    driver: bridge
+    name: bewiseia-network
+
+services:
+
+  postgresql:
+    image: postgres:latest
+    container_name: ${PROJECT_NAME}-postgresql
+    hostname: ${PROJECT_NAME}-postgresql
+    restart: always
+    env_file:
+      - .docker/dev/postgresql/config.ini
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data/
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - bewiseia-network
+    tty: true
+
+  postgresql_editor:
+    image: adminer
+    container_name: ${PROJECT_NAME}-postgresql-editor
+    hostname: ${PROJECT_NAME}-postgresql-editor
+    restart: always
+    env_file:
+      - .docker/dev/postgresql/config.ini
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_NAME}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT_EDITOR}
+    volumes:
+      - postgresql_editor_data:/var/lib/postgresql_editor/data/
+    ports:
+      - ${POSTGRES_PORT_EDITOR}:5432
+    depends_on:
+      - postgresql
+    networks:
+      - bewiseia-network
+
+  backend:
+    container_name: ${PROJECT_NAME}
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: .docker/dev/backend/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/app/backend
+    ports:
+      - ${BACKEND_SERVER_PORT:-8000}:8000
+    depends_on:
+      - postgresql
+    networks:
+      - bewiseia-network
+
+#  mongodb:
+#    container_name: ${PROJECT_NAME}-mongodb
+#    hostname: ${PROJECT_NAME}-mongodb
+#    image: mongo:latest
+#    restart: always
+#    volumes:
+#      - mongo-data:/data/db
+#      - mongo-config:/data/configdb
+#    ports:
+#      - ${MONGO_DB_PORT}:${MONGO_DB_PORT_DOCKER}
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USER}
+#      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
+#    env_file:
+#      - .docker/dev/mongodb/config.ini
+#    networks:
+#      - fastapi
+
+volumes:
+  mongo-data:
+  mongo-config:
+  postgresql_data:
+    driver: local
+  postgresql_editor_data:
+    driver: local
