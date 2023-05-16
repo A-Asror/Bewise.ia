@@ -7,8 +7,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.pool import NullPool as SQLAlchemyNullPool
 
-from db.base import Base
-from db.database import async_db
+from backend.db.base import Base
+from backend.db.database import async_db
 
 config = context.config
 config.set_main_option(name="sqlalchemy.url", value=str(async_db.set_async_db_uri))
