@@ -60,6 +60,5 @@ async def create_question(
     )
 
     await question_repo.create_question(question=question)
-    print("Qwe"*28)
 
     return response
